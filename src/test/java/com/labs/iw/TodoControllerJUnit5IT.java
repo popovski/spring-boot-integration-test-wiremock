@@ -31,7 +31,7 @@ public class TodoControllerJUnit5IT {
   void basicWireMockExample() {
 
     wireMockServer.stubFor(
-      WireMock.get(WireMock.urlEqualTo("/todos"))
+      WireMock.get(WireMock.urlEqualTo("/read-from-file"))
         .willReturn(aResponse()
           .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
           .withBodyFile("todo-api/response-200.json"))

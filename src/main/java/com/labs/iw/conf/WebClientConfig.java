@@ -15,7 +15,7 @@ public class WebClientConfig {
 
   @Bean
   public WebClient todoWebClient(
-    @Value("${mock_base_url}") String todoBaseUrl,
+    @Value("${mock_base_url}") String mockBaseUrl,
     WebClient.Builder webClientBuilder) {
 
 	//  HttpClient client = HttpClient.create()
@@ -23,7 +23,7 @@ public class WebClientConfig {
 	  
     return webClientBuilder
    //		 .clientConnector(new ReactorClientHttpConnector(client))
-      .baseUrl(todoBaseUrl)
+      .baseUrl(mockBaseUrl)
       .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
       .build();
   }
