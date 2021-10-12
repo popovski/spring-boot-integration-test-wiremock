@@ -1,8 +1,8 @@
 {
-    "creationDate": "2021-10-12 13:58:37+0000",
+    "creationDate": "{{now timezone='UTC' format='yyyy-MM-dd HH:mm:ss.SSS'}}",
     "data": {
-        "creationDate": "2021-10-12 13:58:37.905",
-        "uuid": "f3ddb623-6bc3-444a-ab5f-594d026001d5",
+        "creationDate": "{{now timezone='UTC' format='yyyy-MM-dd HH:mm:ss.SSS'}}",
+        "uuid": "{{randomValue type='UUID'}}",
         "firstName": "Petko from file",
         "lastName": "Petkov from file"
     }

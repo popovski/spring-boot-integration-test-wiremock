@@ -41,8 +41,8 @@ public class MockHttpService {
 	public StudentResponse getStudent(String url) {
 		try {
 			CloseableHttpClient client = createHttpClient();
-			
-			HttpGet getMethod = new HttpGet(url);
+			String fullUrl = mockBaseUrl + url;
+			HttpGet getMethod = new HttpGet(fullUrl);
 			HttpResponse response = client.execute(getMethod);
 			System.out.println(response.getEntity().getContent());
 			System.out.println("HTTP Status of response: " + response.getStatusLine().getStatusCode());

@@ -16,7 +16,6 @@ import org.springframework.test.context.DynamicPropertySource;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import com.labs.iw.service.MockService;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -26,8 +25,8 @@ class NikolaTest {
 	@Value("${mock_base_url}")
 	String mockBaseUrl;
 		
-	@Autowired
-	private MockService applicationService;
+//	@Autowired
+//	private MockService applicationService;
 
 	@Autowired
 	private static WireMockServer wireMockServer;
@@ -67,7 +66,7 @@ class NikolaTest {
 
 		System.out.println(wireMockServer.baseUrl());
 		
-		applicationService.restTemplateReadFromFile();
+	//	applicationService.restTemplateReadFromFile();
 	}
 
 	@Test

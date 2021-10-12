@@ -36,7 +36,7 @@ class StudentTest {
 		wireMockServer = new WireMockServer(
 				WireMockConfiguration.wireMockConfig()
 				.port(9999)
-				.extensions(new ResponseTemplateTransformer(false))
+				.extensions(new ResponseTemplateTransformer(true))
 		);
 		wireMockServer.start();
 	}
@@ -57,20 +57,26 @@ class StudentTest {
 	
 	@Test
 	void getStudentTest() {
-		wireMockServer.stubFor(WireMock.get(WireMock.urlEqualTo("/api/get-json-normal"))
+		String urlPath = "/api/get-json-normal";
+		wireMockServer.stubFor(WireMock.get(WireMock.urlEqualTo(urlPath))
 				.willReturn(
 						aResponse()
 						.withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
 						.withBodyFile("mock-api/student_response.json"))
 				);
 		
+		StudentResponse response = mockHttpService.getStudent(urlPath);
 		
-		String url = "http://localhost:9999/api/get-json-normal";
-		StudentResponse response = mockHttpService.getStudent(url);
 		assertThat(response).isNotNull();
 		assertThat(response.getData()).isNotNull();
+		assertThat(response.getData().getUuid()).isNotNull();
+		assertThat(response.getData().getCreationDate()).isNotNull();
 		assertThat(response.getData().getFirstName()).isNotNull();
 		assertThat(response.getData().getLastName()).isNotNull();
+		
+		assertThat(response.getData().getFirstName()).isEqualTo("Petko from file");
+		assertThat(response.getData().getLastName()).isEqualTo("Petkov from file");
+		
 	}
 	
 	@Test
