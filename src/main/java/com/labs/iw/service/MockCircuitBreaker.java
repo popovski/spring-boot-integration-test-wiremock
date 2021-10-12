@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -31,30 +32,41 @@ import com.labs.iw.dto.StudentResponse;
 import io.netty.handler.timeout.WriteTimeoutException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 
 @Component
-public class MockHttpService {
+public class MockCircuitBreaker {
 	@Value("${mock_base_url}")
 	private String mockBaseUrl;
 
 	@Autowired
 	private ObjectMapper objectMapper;
 	
-	public StudentResponse getStudent(String url) {
+   @Autowired
+   private CircuitBreakerFactory circuitBreakerFactory;
+   	
+	public StudentResponse getStudentCircuitBreaker(String url) {
 		try {
-			CloseableHttpClient client = createHttpClient();
 			String fullUrl = mockBaseUrl + url;
-			HttpGet getMethod = new HttpGet(fullUrl);
-			HttpResponse response = client.execute(getMethod);
-			System.out.println("HTTP Status of response: " + response.getStatusLine().getStatusCode());
+			RestTemplate restTemplate = new RestTemplate();
+			CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitbreaker");
 			
-			return responseToObject(response);
+			StudentResponse response = circuitBreaker.run(() -> restTemplate.getForObject(url, StudentResponse.class), 
+			      throwable -> getDefaultAlbumList());
+			
+			return response;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 	
+	private StudentResponse getDefaultAlbumList() {
+		// TODO Auto-generated method stub
+		return new StudentResponse();
+	}
+
 	public HttpRequestRetryHandler requestRetryHandler = new HttpRequestRetryHandler() {
 	    @Override
 	    public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
