@@ -23,8 +23,6 @@ public class StudentResponse {
     private String creationDate;
     @JsonProperty("data")
     private Data data;
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     @JsonProperty("creationDate")
     public String getCreationDate() {
@@ -45,15 +43,4 @@ public class StudentResponse {
     public void setData(Data data) {
         this.data = data;
     }
-
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-    }
-
 }

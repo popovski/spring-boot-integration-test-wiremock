@@ -37,9 +37,8 @@ public class MockHttpService {
 
 	@Autowired
 	private ObjectMapper objectMapper;
-
 	
-	public StudentResponse getHttpRequest(String url) {
+	public StudentResponse getStudent(String url) {
 		try {
 			CloseableHttpClient client = createHttpClient();
 			
@@ -53,6 +52,18 @@ public class MockHttpService {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public HttpRequestRetryHandler requestRetryHandler = new HttpRequestRetryHandler() {
+	    @Override
+	    public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
+	   	 System.out.println("****** retry");
+	        return executionCount < 5;
+	    }
+	};
+	
+	public StudentResponse responseToObject(HttpResponse response) throws JsonParseException, JsonMappingException, UnsupportedOperationException, IOException {
+		return objectMapper.readValue(response.getEntity().getContent(), StudentResponse.class);
 	}
 	
 	public RequestConfig createRequestConfig() {
@@ -71,17 +82,5 @@ public class MockHttpService {
 				.setDefaultRequestConfig(createRequestConfig())
 				.setRetryHandler(requestRetryHandler)
 				.build();
-	}
-	
-	public HttpRequestRetryHandler requestRetryHandler = new HttpRequestRetryHandler() {
-	    @Override
-	    public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
-	   	 System.out.println("****** retry");
-	        return executionCount < 5;
-	    }
-	};
-	
-	public StudentResponse responseToObject(HttpResponse response) throws JsonParseException, JsonMappingException, UnsupportedOperationException, IOException {
-		return objectMapper.readValue(response.getEntity().getContent(), StudentResponse.class);
 	}
 }
