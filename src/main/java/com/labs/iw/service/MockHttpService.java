@@ -44,7 +44,6 @@ public class MockHttpService {
 			String fullUrl = mockBaseUrl + url;
 			HttpGet getMethod = new HttpGet(fullUrl);
 			HttpResponse response = client.execute(getMethod);
-			System.out.println(response.getEntity().getContent());
 			System.out.println("HTTP Status of response: " + response.getStatusLine().getStatusCode());
 			
 			return responseToObject(response);
@@ -57,7 +56,7 @@ public class MockHttpService {
 	public HttpRequestRetryHandler requestRetryHandler = new HttpRequestRetryHandler() {
 	    @Override
 	    public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
-	   	 System.out.println("****** retry");
+	   	 System.out.println("****** retry " + executionCount);
 	        return executionCount < 5;
 	    }
 	};

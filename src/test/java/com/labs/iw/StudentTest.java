@@ -27,6 +27,7 @@ class StudentTest {
 		
 	@Autowired
 	private MockHttpService mockHttpService;
+	
 // **** Wiremock setup Start
 	@Autowired
 	private static WireMockServer wireMockServer;
@@ -52,8 +53,7 @@ class StudentTest {
 		wireMockServer.resetAll();
 		System.out.println("Stored stubbings after reset: " + wireMockServer.getStubMappings().size());
 	}
-
-// **** Wiremock setup end	
+// **** Wiremock setup end
 	
 	@Test
 	void getStudentTest() {
@@ -61,6 +61,7 @@ class StudentTest {
 		wireMockServer.stubFor(WireMock.get(WireMock.urlEqualTo(urlPath))
 				.willReturn(
 						aResponse()
+						.withStatus(200)
 						.withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
 						.withBodyFile("mock-api/student_response.json"))
 				);
@@ -76,26 +77,43 @@ class StudentTest {
 		
 		assertThat(response.getData().getFirstName()).isEqualTo("Petko from file");
 		assertThat(response.getData().getLastName()).isEqualTo("Petkov from file");
-		
 	}
 	
 	@Test
 	void getStudentWithRandomDelayCall() {
-		String url = "http://localhost:9999/api/get-json-random-delay";
+		String urlPath = "/api/get-json-random-delay";
+		wireMockServer.stubFor(WireMock.get(WireMock.urlEqualTo(urlPath))
+				.willReturn(
+						aResponse()
+						.withStatus(200)
+						.withUniformRandomDelay(500, 1600)
+						.withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+						.withBodyFile("mock-api/student_response_delay.json"))
+				);
 		
-		StudentResponse response =	mockHttpService.getStudent(url);
+	//	String url = "http://localhost:9999/api/get-json-random-delay";
+		
+		StudentResponse response =	mockHttpService.getStudent(urlPath);
 		
 		assertThat(response).isNotNull();
+		assertThat(response.getData()).isNotNull();
+		assertThat(response.getData().getUuid()).isNotNull();
+		assertThat(response.getData().getCreationDate()).isNotNull();
+		assertThat(response.getData().getFirstName()).isNotNull();
+		assertThat(response.getData().getLastName()).isNotNull();
+		
+		assertThat(response.getData().getFirstName()).isEqualTo("Petko from file delay");
+		assertThat(response.getData().getLastName()).isEqualTo("Petkov from file delay");
 		
 	}
 	
-	@Test
-	void getStudentWithFixedDelay() {
-		String url = "http://localhost:9999/api/get-json-fix-delay";
-		
-		StudentResponse response =	mockHttpService.getStudent(url);
-		
-		assertThat(response).isNull();
-		
-	}
+//	@Test
+//	void getStudentWithFixedDelay() {
+//		String url = "http://localhost:9999/api/get-json-fix-delay";
+//		
+//		StudentResponse response =	mockHttpService.getStudent(url);
+//		
+//		assertThat(response).isNull();
+//		
+//	}
 }
