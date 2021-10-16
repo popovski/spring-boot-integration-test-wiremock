@@ -1,0 +1,10 @@
+{    
+	"creationDate" : "{{now timezone='UTC' format='yyyy-MM-dd HH:mm:ssZ'}}",
+    "data": 
+	{
+		"creationDate" : "{{now timezone='UTC' format='yyyy-MM-dd HH:mm:ss.SSS'}}",
+		"uuid": "{{randomValue type='UUID'}}",
+		"firstName": "Petko from file",
+		"lastName": "Petkov from file"
+	}
+}	

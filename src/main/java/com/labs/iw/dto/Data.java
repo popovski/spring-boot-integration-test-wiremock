@@ -2,13 +2,12 @@
 package com.labs.iw.dto;
 
 import javax.annotation.Generated;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({"creationDate", "uuid", "firstName", "lastName"})
-@Generated("jsonschema2pojo")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Data {
 	@JsonProperty("creationDate")
 	private String creationDate;
@@ -59,4 +58,10 @@ public class Data {
        this.creationDate = creationDate;
    }
 
+   
+   @Override
+   public String toString() {
+   	String data = getFirstName() + " " + getLastName();
+   	return data;
+   }
 }

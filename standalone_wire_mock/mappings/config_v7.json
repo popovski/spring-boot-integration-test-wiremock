@@ -1,0 +1,174 @@
+{
+	"mappings": [
+		{
+			"request": {
+				"method": "GET",
+				"url": "/api/read-from-json-file"
+			},
+			"response": {
+				"bodyFileName": "json_response.json",
+				"headers": {
+					"Content-Type": "application/json"
+				}
+			}
+		},
+		{
+			"request": {
+				"method": "POST",
+				"url": "/api/read-from-xml-file"
+			},
+			"response": {
+				"bodyFileName": "xml_response.xml",
+				"headers": {
+					"Content-Type": "application/xml"
+				}
+			}
+		},
+		{
+			"request": {
+				"method": "GET",
+				"url": "/api/get-json-fix-delay"
+			},
+			"response": {
+				"status": 200,
+				"fixedDelayMilliseconds": 1500,
+				"jsonBody": {
+					"creationDate" : "{{now timezone='UTC' format='yyyy-MM-dd HH:mm:ssZ'}}",
+					"data": {
+						"uuid": "{{randomValue type='UUID'}}",
+						"firstName": "Petko",
+						"lastName": "Petkovski"
+					}
+				},
+				"headers": {
+					"Content-Type": "application/json"
+				}
+			}
+		},
+		{
+			"request": {
+				"method": "GET",
+				"url": "/api/get-json-random-delay"
+			},
+			"response": {
+				"status": 200,
+				"delayDistribution": {
+					"type": "uniform",
+					"lower": 800,
+					"upper": 1200
+				},
+				"jsonBody": {
+					"creationDate" : "{{now timezone='UTC' format='yyyy-MM-dd HH:mm:ssZ'}}",
+					"data": {
+						"uuid": "{{randomValue type='UUID'}}",
+						"firstName": "Petko",
+						"lastName": "Petkovski"
+					}
+				},
+				"headers": {
+					"Content-Type": "application/json"
+				}
+			}
+		},
+		{
+			"request": {
+				"method": "GET",
+				"url": "/api/get-json-normal"
+			},
+			"response": {
+				"status": 200,
+				"jsonBody": {
+					"creationDate" : "{{now timezone='UTC' format='yyyy-MM-dd HH:mm:ssZ'}}",
+					"data": {
+						"uuid": "{{randomValue type='UUID'}}",
+						"firstName": "Petko",
+						"lastName": "Petkovski"
+					}
+				},
+				"headers": {
+					"Content-Type": "application/json"
+				}
+			}
+		},
+		{
+			"request": {
+				"method": "POST",
+				"url": "/api/post-json"
+			},
+			"response": {
+				"status": 201,
+				"jsonBody": {
+					"creationDate" : "{{now timezone='UTC' format='yyyy-MM-dd HH:mm:ssZ'}}",
+					"data": {
+						"uuid": "{{randomValue type='UUID'}}",
+						"firstName": "{{lookup (parseJson request.body) 'firstName'}}",
+						"lastName": "{{lookup (parseJson request.body) 'lastName'}}"
+					}
+				},
+				"headers": {
+					"Content-Type": "application/json"
+				}
+			}
+		},
+		{
+			"request": {
+				"method": "GET",
+				"url": "/api/get-fault"
+			},
+			"response": {
+				"status": 404,
+				"jsonBody": {
+					"code": "P-E001",
+					"description": "ENTITY NOT FOUND IN THE DATABASE",
+					"error": "Student not found",
+					"timestamp": "{{now timezone='UTC' format='yyyy-MM-dd HH:mm:ssZ'}}"
+				},
+				"headers": {
+					"Content-Type": "application/json"
+				}
+			}
+		},
+		{
+			"request": {
+				"method": "GET",
+				"url": "/api/get-rate-limit"
+			},
+			"response": {
+				"status": 429,
+				"jsonBody": {
+					"code": "P-E001",
+					"description": "Too Many Requests",
+					"error": "API only allow 1 request per second",
+					"timestamp": "{{now timezone='UTC' format='yyyy-MM-dd HH:mm:ssZ'}}"
+				},
+				"headers": {
+					"Content-Type": "application/json",
+					"Retry-After": "3600"
+				}
+			}
+		},
+		{
+			"request": {
+				 "method" : "GET",
+				"url": "/api/basic-auth",
+				"basicAuthCredentials" : {
+					"username" : "test",
+					"password" : "test"
+				}
+			}, "response": {
+				"status": 200,
+				"jsonBody": {
+					"creationDate" : "{{now timezone='UTC' format='yyyy-MM-dd HH:mm:ssZ'}}",
+					"data": {
+						"uuid": "{{randomValue type='UUID'}}",
+						"firstName": "Petko",
+						"lastName": "Petkovski"
+					}
+				},
+				"headers": {
+					"Content-Type": "application/json"
+				}
+			}
+		}
+	]
+}

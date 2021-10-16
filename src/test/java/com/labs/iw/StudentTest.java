@@ -14,8 +14,8 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
-import com.labs.iw.dto.StudentResponse;
-import com.labs.iw.service.MockHttpService;
+import com.labs.iw.dto.StudentResponsePojo;
+import com.labs.iw.service.HttpClientService;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,7 +26,7 @@ class StudentTest {
 	String mockBaseUrl;
 		
 	@Autowired
-	private MockHttpService mockHttpService;
+	private HttpClientService mockHttpService;
 	
 // **** Wiremock setup Start
 	@Autowired
@@ -66,7 +66,7 @@ class StudentTest {
 						.withBodyFile("mock-api/student_response.json"))
 				);
 		
-		StudentResponse response = mockHttpService.getStudent(urlPath);
+		StudentResponsePojo response = mockHttpService.getStudent(urlPath);
 		
 		assertThat(response).isNotNull();
 		assertThat(response.getData()).isNotNull();
@@ -93,7 +93,7 @@ class StudentTest {
 		
 	//	String url = "http://localhost:9999/api/get-json-random-delay";
 		
-		StudentResponse response =	mockHttpService.getStudent(urlPath);
+		StudentResponsePojo response = mockHttpService.getStudent(urlPath);
 		
 		assertThat(response).isNotNull();
 		assertThat(response.getData()).isNotNull();

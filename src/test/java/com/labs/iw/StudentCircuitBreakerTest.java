@@ -14,11 +14,12 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
-import com.labs.iw.dto.StudentResponse;
-import com.labs.iw.service.MockCircuitBreaker;
-import com.labs.iw.service.MockHttpService;
+import com.labs.iw.dto.StudentResponsePojo;
+import com.labs.iw.service.CircuitBreakerService;
+import com.labs.iw.service.HttpClientService;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static org.assertj.core.api.Assertions.assertThat;
+import java.util.Date;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -27,7 +28,7 @@ class StudentCircuitBreakerTest {
 	String mockBaseUrl;
 		
 	@Autowired
-	private MockCircuitBreaker mockCircuitBreaker;
+	private CircuitBreakerService mockCircuitBreaker;
 	
 // **** Wiremock setup Start
 	@Autowired
@@ -67,7 +68,7 @@ class StudentCircuitBreakerTest {
 						.withBodyFile("mock-api/student_response.json"))
 				);
 		
-		StudentResponse response = mockCircuitBreaker.getStudentCircuitBreaker(urlPath);
+		StudentResponsePojo response = mockCircuitBreaker.getStudentCircuitBreaker(urlPath);
 		
 		assertThat(response).isNotNull();
 		assertThat(response.getData()).isNotNull();
@@ -78,5 +79,38 @@ class StudentCircuitBreakerTest {
 		
 		assertThat(response.getData().getFirstName()).isEqualTo("Petko from file");
 		assertThat(response.getData().getLastName()).isEqualTo("Petkov from file");
+	}
+	
+	@Test
+	void getStudentWithRandomDelayCall() {
+		String urlPath = "/api/get-json-random-delay";
+		wireMockServer.stubFor(WireMock.get(WireMock.urlEqualTo(urlPath))
+			.willReturn(
+					aResponse()
+					.withStatus(200)
+					.withUniformRandomDelay(990, 1010)
+					.withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+					.withBodyFile("mock-api/student_response_delay.json"))
+		);
+		
+	//	String url = "http://localhost:9999/api/get-json-random-delay";
+		long currentTime = System.currentTimeMillis();
+		long startTime = currentTime; 
+	// here is your method you want to measure
+		int loops = 30;
+		for (int i = 0; i < loops; i++) {
+			StudentResponsePojo response =	mockCircuitBreaker.getStudentCircuitBreaker(urlPath);
+			System.out.print(i + " ");
+			System.out.println(response + " " + response.getCreationDate());
+			assertThat(response).isNotNull();
+			assertThat(response.getData()).isNotNull();
+		}
+		
+		long executionTime = currentTime - startTime;
+		
+		long estimatedTime = currentTime  + loops * 1000;
+		
+		assertThat(executionTime).isLessThan(estimatedTime);
+
 	}
 }
