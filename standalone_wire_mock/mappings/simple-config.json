@@ -1,0 +1,64 @@
+{
+	"mappings": [
+		{
+			"request": {
+				"method": "GET",
+				"url": "/api/get-json-normal"
+			},
+			"response": {
+				"status": 200,
+				"jsonBody": {
+					"creationDate" : "{{now timezone='UTC' format='yyyy-MM-dd HH:mm:ssZ'}}",
+					"data": {
+						"uuid": "{{randomValue type='UUID'}}",
+						"firstName": "Petko",
+						"lastName": "Petkovski"
+					}
+				},
+				"headers": {
+					"Content-Type": "application/json"
+				}
+			}
+		},{
+			"request": {
+				"method": "GET",
+				"url": "/api/get-fault"
+			},
+			"response": {
+				"status": 404,
+				"jsonBody": {
+					"code": "P-E001",
+					"description": "ENTITY NOT FOUND IN THE DATABASE",
+					"error": "Student not found",
+					"timestamp": "{{now timezone='UTC' format='yyyy-MM-dd HH:mm:ssZ'}}"
+				},
+				"headers": {
+					"Content-Type": "application/json"
+				}
+			}
+		},{
+			"request": {
+				 "method" : "GET",
+				"url": "/api/basic-auth",
+				"basicAuthCredentials" : {
+					"username" : "mock",
+					"password" : "mock"
+				}
+			}, 
+			"response": {
+				"status": 200,
+				"jsonBody": {
+					"creationDate" : "{{now timezone='UTC' format='yyyy-MM-dd HH:mm:ssZ'}}",
+					"data": {
+						"uuid": "{{randomValue type='UUID'}}",
+						"firstName": "Petko",
+						"lastName": "Petkovski"
+					}
+				},
+				"headers": {
+					"Content-Type": "application/json"
+				}
+			}
+		}
+	]
+}
